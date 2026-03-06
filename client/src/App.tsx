@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Play, Download, Trash2, MousePointer2, Save, History, Loader2, Layers, ShieldCheck, Database, XCircle } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Search, Play, Download, MousePointer2, Save, Loader2, Layers, ShieldCheck, Database, XCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.DEV ? 'http://localhost:3001' : window.location.origin);
 
 // Canonical schema for internal storage
 const SELECTOR_LABELS: Record<string, string> = {
