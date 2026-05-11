@@ -4,7 +4,7 @@ import * as XLSX from 'xlsx';
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.DEV ? 'http://localhost:3001' : window.location.origin);
+  (import.meta.env.DEV ? 'http://localhost:3001' : '');
 
 // Canonical schema for internal storage
 const SELECTOR_LABELS: Record<string, string> = {
@@ -51,6 +51,7 @@ function App() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const fetchRecipes = useCallback(async () => {
+    if (!API_BASE_URL) return;
     try {
       const res = await fetch(`${API_BASE_URL}/api/recipes`);
       if (!res.ok) throw new Error('Failed to fetch recipes');
@@ -81,11 +82,33 @@ function App() {
 
   const handleGo = () => {
     if (!url) return;
+
+    if (!API_BASE_URL) {
+      setError('Backend not configured. Set VITE_API_BASE_URL to your API server URL.');
+      return;
+    }
+
+    try {
+      const target = new URL(url);
+      if (!import.meta.env.DEV && target.origin === window.location.origin) {
+        setError('Target URL cannot be this app domain. Enter the external site you want to scrape.');
+        return;
+      }
+    } catch {
+      setError('Invalid URL. Please include http:// or https://');
+      return;
+    }
+
     setError(null);
     setProxyUrl(`${API_BASE_URL}/proxy?url=${encodeURIComponent(url)}`);
   };
 
   const saveRecipe = async () => {
+    if (!API_BASE_URL) {
+      setError('Backend not configured. Set VITE_API_BASE_URL to your API server URL.');
+      return;
+    }
+
     const name = prompt('Recipe Name:');
     if (!name) return;
     
@@ -107,6 +130,11 @@ function App() {
   };
 
   const loadRecipe = (r: Recipe) => {
+    if (!API_BASE_URL) {
+      setError('Backend not configured. Set VITE_API_BASE_URL to your API server URL.');
+      return;
+    }
+
     setUrl(r.url);
     setSelections(Object.entries(r.selectors).map(([k, v]) => ({ type: k, selector: v, text: '' })));
     setDetailSelections(Object.entries(r.detailSelectors || {}).map(([k, v]) => ({ type: k, selector: v, text: '' })));
@@ -114,6 +142,11 @@ function App() {
   };
 
   const runScraper = async () => {
+    if (!API_BASE_URL) {
+      setError('Backend not configured. Set VITE_API_BASE_URL to your API server URL.');
+      return;
+    }
+
     setIsScraping(true);
     setActiveTab('preview');
     setError(null);
