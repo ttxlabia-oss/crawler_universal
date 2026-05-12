@@ -5,7 +5,14 @@
   "scripts": {
     "server": "cd server && node index.js",
     "client": "cd client && npm run dev",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "catalog": "node server/catalog/catalogCli.js all --site all",
+    "catalog:discover": "node server/catalog/catalogCli.js discover",
+    "catalog:extract": "node server/catalog/catalogCli.js extract",
+    "catalog:export": "node server/catalog/catalogCli.js export",
+    "catalog:audit": "node server/catalog/catalogCli.js audit",
+    "catalog:profiles": "node server/catalog/profileProbe.js",
+    "catalog:map": "node server/catalog/siteCartography.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -1,0 +1,2 @@
+data/catalog.db.tar.gz filter=lfs diff=lfs merge=lfs -text
+data/exports/*.csv filter=lfs diff=lfs merge=lfs -text
